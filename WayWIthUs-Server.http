@@ -1,0 +1,6 @@
+@WayWIthUs_Server_HostAddress = http://localhost:5248
+
+GET {{WayWIthUs_Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
