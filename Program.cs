@@ -1,4 +1,6 @@
+using GoogleApi.Extensions;
 using WayWIthUs_Server.Data;
+using WayWIthUs_Server.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +19,9 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader();
     });
 });
-
+builder.Services.AddGoogleApiClients();
 builder.Services.AddSingleton<MongoDbService>();
+builder.Services.AddScoped<IGooglePlacesService, GooglePlacesService>();
 
 
 

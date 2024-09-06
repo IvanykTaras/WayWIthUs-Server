@@ -8,8 +8,27 @@ namespace WayWIthUs_Server.Entities
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
+        public string Location { get; set; }
+        public int DaysNumber { get; set; }
+        public BudgetType BudgetType { get; set; }
+        public GroupType GroupType { get; set; }
         public ICollection<Hotel> Hotels { get; set; }
         public ICollection<itinerary> Itinerary { get; set; }
+    }
+
+    public enum BudgetType
+    {
+        Cheap,
+        Moderate,
+        Luxury
+    }
+
+    public enum GroupType
+    {
+        OnePerson,
+        Couple,
+        Family,
+        Friends
     }
 
     public class Hotel
