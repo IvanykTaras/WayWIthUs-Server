@@ -19,14 +19,14 @@ namespace WayWIthUs_Server.Controllers
 
 
 
-        [HttpGet("/details")]
+        [HttpGet("details")]
         public async Task<PlacesResponse> GetDetails([FromQuery]string location)
         {
             return await _googlePlacesService.getPlacesDetails(location);
         }
 
 
-        [HttpGet("/photos")]
+        [HttpGet("photos")]
         public async Task<List<string>> GetPhotos([FromQuery]string location, int height, int width)
         {
             return await _googlePlacesService.getPhotoUrls(location, height, width);

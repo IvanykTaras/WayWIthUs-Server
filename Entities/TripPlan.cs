@@ -8,11 +8,19 @@ namespace WayWIthUs_Server.Entities
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
+        [BsonRequired]
+        public string UserEmail { get; set; }
+        [BsonRequired]
         public string Location { get; set; }
+        [BsonRequired]
         public int DaysNumber { get; set; }
+        [BsonRequired]
         public BudgetType BudgetType { get; set; }
+        [BsonRequired]
         public GroupType GroupType { get; set; }
+        [BsonRequired]
         public ICollection<Hotel> Hotels { get; set; }
+        [BsonRequired]
         public ICollection<itinerary> Itinerary { get; set; }
     }
 
