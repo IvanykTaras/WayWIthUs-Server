@@ -32,5 +32,10 @@ namespace WayWIthUs_Server.Controllers
             return await _googlePlacesService.getPhotoUrls(location, height, width);
         }
 
+        [HttpGet("link")]
+        public async Task<string> GetPhotos([FromQuery] string location)
+        {
+            return await _googlePlacesService.getPlaceLink(location);
+        }
     }
 }

@@ -31,13 +31,23 @@ namespace WayWIthUs_Server.Controllers
             return await _tripPlan.Find(filter).FirstOrDefaultAsync();
         }
 
-
+        [HttpGet("getByEmail")]
+        public async Task<List<TripPlan>> GetByEmail([FromQuery]string email)
+        {
+            var filter = Builders<TripPlan>.Filter.Eq(e => e.UserEmail, email);
+            return await _tripPlan.Find(filter).ToListAsync();
+        }
 
         [HttpPost]
         public async Task<ActionResult> Post(TripPlan tp)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             await _tripPlan.InsertOneAsync(tp);
-            return Ok();
+            return CreatedAtAction(nameof(GetById), new { id = tp.Id }, tp);
         }
     }
 }

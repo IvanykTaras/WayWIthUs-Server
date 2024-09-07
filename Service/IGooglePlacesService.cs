@@ -6,5 +6,7 @@ namespace WayWIthUs_Server.Service
     {
         Task<PlacesResponse> getPlacesDetails(string data);
         Task<List<string>> getPhotoUrls(string location, int height, int width);
+
+        Task<string> getPlaceLink(string location);
     }
 }

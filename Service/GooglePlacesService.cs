@@ -45,5 +45,12 @@ namespace WayWIthUs_Server.Service
                 .ToList();
             return photoName;
         }
+
+        public async Task<string> getPlaceLink(string location) {
+            return (await getPlacesDetails(location))
+                .Places
+                .FirstOrDefault()
+                .GoogleMapsUri;
+        }
     }
 }
