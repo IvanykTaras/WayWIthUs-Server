@@ -20,11 +20,24 @@ namespace WayWIthUs_Server.Entities
 
         [BsonRequired]
         public ImageUrl Image_url { get; set; }
+        [BsonRequired]
+        public Transport Transport { get; set; }
 
         [BsonRequired]
         public ICollection<Hotel> Hotels { get; set; }
         [BsonRequired]
         public ICollection<itinerary> Itinerary { get; set; }
+    }
+
+
+    public enum Transport{
+        Train,
+        Car,
+        Bus,
+        AirPlain,
+        OnFeet,
+        Ship,
+        Bicycle
     }
 
     public class Hotel

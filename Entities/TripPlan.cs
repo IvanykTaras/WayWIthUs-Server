@@ -17,10 +17,8 @@ namespace WayWIthUs_Server.Entities{
         public string Title { get; set; }
         [BsonRequired]
         public string Description { get; set; }
-        [BsonRequired]
-        public DateTime StartDate { get; set; }
-        [BsonRequired]
-        public DateTime EndDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         [BsonRequired]
         public ICollection<CityPlan> CityPlans { get; set; }
         [BsonRequired]
