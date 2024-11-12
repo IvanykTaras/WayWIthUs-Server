@@ -31,6 +31,7 @@ namespace WayWIthUs_Server.Controllers
         [HttpGet("{id}")]
         public async Task<TripPlan> GetById(string id)
         {
+            // write for me loop which executes ten times
             var filter = Builders<TripPlan>.Filter.Eq(e => e.Id, id);
             return await _tripPlan.Find(filter).FirstOrDefaultAsync();
         }
@@ -38,7 +39,7 @@ namespace WayWIthUs_Server.Controllers
         [HttpGet("getByEmail")]
         public async Task<List<TripPlan>> GetByEmail([FromQuery]string email)
         {
-            var filter = Builders<TripPlan>.Filter.Eq(e => e.UserEmail, email);
+            var filter = Builders<TripPlan>.Filter.Eq(e => "some@email.com", email);
             return await _tripPlan.Find(filter).ToListAsync();
         }
 
@@ -50,18 +51,36 @@ namespace WayWIthUs_Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            foreach (var hotel in tp.Hotels)
+            foreach (var city in tp.CityPlans)
             {
-                hotel.image_url = (await _googlePlacesService.getPhotoUrls(hotel.name, 400, 400)).FirstOrDefault();
+                city.Image_url.OriginUrl = (await _googlePlacesService.getPhotoUrls(city.OriginLocation, 400, 400)).FirstOrDefault();
+                city.Image_url.DestinationUrl = (await _googlePlacesService.getPhotoUrls(city.DescriptionLocation, 400, 400)).FirstOrDefault();
+
             }
 
-            foreach (var day in tp.Itinerary)
+            foreach (var city in tp.CityPlans)
             {
-                foreach (var place in day.Places)
+                foreach (var hotel in city.Hotels)
                 {
-                    place.image_url = (await _googlePlacesService.getPhotoUrls(place.location, 400, 400)).FirstOrDefault();
+                    hotel.image_url = (await _googlePlacesService.getPhotoUrls(hotel.name, 400, 400)).FirstOrDefault();
+                    hotel.googleMapUrl = await _googlePlacesService.getPlaceLink(hotel.name);
                 }
             }
+
+
+            
+            foreach (var city in tp.CityPlans)
+            {
+                foreach (var day in city.Itinerary)
+                {
+                    foreach (var place in day.Places)
+                    {
+                        place.googleMapUrl = await _googlePlacesService.getPlaceLink(place.location);
+                        place.image_url = (await _googlePlacesService.getPhotoUrls(place.location, 400, 400)).FirstOrDefault();
+                    }
+                }
+            }    
+            
 
 
             await _tripPlan.InsertOneAsync(tp);

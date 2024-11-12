@@ -22,6 +22,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddGoogleApiClients();
 builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddScoped<IGooglePlacesService, GooglePlacesService>();
+builder.Services.AddScoped<IGeminiService, GeminiService>();
 
 
 

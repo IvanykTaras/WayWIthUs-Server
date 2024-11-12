@@ -1,27 +1,60 @@
-﻿using MongoDB.Bson;
+using System;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace WayWIthUs_Server.Entities
-{
+namespace WayWIthUs_Server.Entities{
     public class TripPlan
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
+        
         [BsonRequired]
-        public string UserEmail { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string UserId { get; set; }
+        
         [BsonRequired]
-        public string Location { get; set; }
+        public string Title { get; set; }
         [BsonRequired]
-        public int DaysNumber { get; set; }
+        public string Description { get; set; }
+        [BsonRequired]
+        public DateTime StartDate { get; set; }
+        [BsonRequired]
+        public ICollection<CityPlan> CityPlans { get; set; }
+        [BsonRequired]
+        public ICollection<string> Languages { get; set; }
+        [BsonRequired]
+        public Age Age { get; set; }
+        [BsonRequired]
+        public GenderParticipants GenderParticipants { get; set; }
+        [BsonRequired]
+        public bool WithChildren { get; set; }
+        
+        [BsonRequired]
+        public int Budget { get; set; }
+        
         [BsonRequired]
         public BudgetType BudgetType { get; set; }
+
         [BsonRequired]
         public GroupType GroupType { get; set; }
+
         [BsonRequired]
-        public ICollection<Hotel> Hotels { get; set; }
-        [BsonRequired]
-        public ICollection<itinerary> Itinerary { get; set; }
+        public string TypeTravel { get; set; }
+    }
+
+    public class Age
+    {
+        public int Min { get; set; }
+        public int Max { get; set; }
+    }
+
+    public enum GenderParticipants
+    {
+        Male,
+        Female,
+        Both,
+        Other
     }
 
     public enum BudgetType
@@ -38,32 +71,5 @@ namespace WayWIthUs_Server.Entities
         Family,
         Friends
     }
-
-    public class Hotel
-    {
-        public string name { get; set; }
-        public string address { get; set; }
-        public string price { get; set; }
-        public string image_url { get; set; }
-        public string geo_coordinates { get; set; }
-        public string rating { get; set; }
-        public string description { get; set; }
-    }
-
-    public class itinerary
-    {
-        public int Day { get; set; }
-        public ICollection<Place> Places { get; set; }
-    }
-
-    public class Place
-    {
-        public string time { get; set; }
-        public string location { get; set; }
-        public string details { get; set; }
-        public string image_url { get; set; }
-        public string geo_coordinates { get; set; }
-        public string ticket_pricing { get; set; }
-        public string rating { get; set; }
-    }
 }
+
