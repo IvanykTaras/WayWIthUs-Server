@@ -20,6 +20,8 @@ namespace WayWIthUs_Server.Entities{
         [BsonRequired]
         public DateTime StartDate { get; set; }
         [BsonRequired]
+        public DateTime EndDate { get; set; }
+        [BsonRequired]
         public ICollection<CityPlan> CityPlans { get; set; }
         [BsonRequired]
         public ICollection<string> Languages { get; set; }
