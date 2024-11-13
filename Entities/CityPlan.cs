@@ -14,7 +14,10 @@ namespace WayWIthUs_Server.Entities
 
         [BsonRequired]
         public string OriginLocation { get; set; }
-        
+
+        [BsonRequired]
+        public string DestiantionLocation { get; set; }
+
         [BsonRequired]
         public string DescriptionLocation { get; set; }
 

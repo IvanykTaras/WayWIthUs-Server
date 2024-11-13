@@ -41,6 +41,11 @@ namespace WayWIthUs_Server.Entities{
 
         [BsonRequired]
         public string TypeTravel { get; set; }
+
+        [BsonRequired]
+        public bool ParticipantsFromOtherCountries { get; set; }
+
+
     }
 
     public class Age
