@@ -17,19 +17,11 @@ namespace WayWIthUs_Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GenerateTripJson()
+        public async Task<IActionResult> GenerateTripJson([FromBody] string message)
         {
             try
             {
-                var trip = new GeminiTrip
-                {
-                    UserEmail = "user@example.com",
-                    Location = "Paris",
-                    DaysNumber = "1",
-                    BudgetType = BudgetType.Cheap,
-                    GroupType = GroupType.Family
-                };
-                var response = await _geminiService.GenerateTripJson(trip);
+                string response = await _geminiService.OnMessage(message);
                 return Ok(response);
             }
             catch (Exception ex)

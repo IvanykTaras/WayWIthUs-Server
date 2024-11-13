@@ -4,7 +4,7 @@ namespace WayWIthUs_Server.Service{
     
     public interface IGeminiService
     {
-        Task<string> GenerateTripJson(GeminiTrip trip);
+        Task<string> OnMessage(string message);
     }
 };
 
