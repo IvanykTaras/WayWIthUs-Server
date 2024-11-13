@@ -53,9 +53,8 @@ namespace WayWIthUs_Server.Controllers
 
             foreach (var city in tp.CityPlans)
             {
-                city.Image_url.OriginUrl = (await _googlePlacesService.getPhotoUrls(city.OriginLocation, 400, 400)).FirstOrDefault();
-                city.Image_url.DestinationUrl = (await _googlePlacesService.getPhotoUrls(city.DescriptionLocation, 400, 400)).FirstOrDefault();
-
+                city.Image_url.OriginUrl = (await _googlePlacesService.getPhotoUrls(city.Image_url.OriginUrl, 400, 400)).FirstOrDefault();
+                city.Image_url.DestinationUrl = (await _googlePlacesService.getPhotoUrls(city.Image_url.DestinationUrl, 400, 400)).FirstOrDefault();
             }
 
             foreach (var city in tp.CityPlans)

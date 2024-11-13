@@ -19,9 +19,6 @@ namespace WayWIthUs_Server.Entities
         public string DestiantionLocation { get; set; }
 
         [BsonRequired]
-        public string DescriptionLocation { get; set; }
-
-        [BsonRequired]
         public ImageUrl Image_url { get; set; }
         [BsonRequired]
         public Transport Transport { get; set; }
