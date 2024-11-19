@@ -1,4 +1,5 @@
 ﻿using GoogleApi.Entities.Maps.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WayWIthUs_Server.Models;
@@ -6,6 +7,7 @@ using WayWIthUs_Server.Service;
 
 namespace WayWIthUs_Server.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class GoogleApiController : ControllerBase
