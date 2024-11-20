@@ -37,7 +37,7 @@ namespace WayWIthUs_Server.Entities{
         public BudgetType BudgetType { get; set; }
 
         [BsonRequired]
-        public GroupType GroupType { get; set; }
+        public int GroupType { get; set; }
 
         [BsonRequired]
         public string TypeTravel { get; set; }
