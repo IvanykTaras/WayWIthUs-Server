@@ -53,35 +53,27 @@ namespace WayWIthUs_Server.Controllers
 
             foreach (var city in tp.CityPlans)
             {
-                city.Image_url.OriginUrl = (await _googlePlacesService.getPhotoUrls(city.Image_url.OriginUrl, 400, 400)).FirstOrDefault();
-                city.Image_url.DestinationUrl = (await _googlePlacesService.getPhotoUrls(city.Image_url.DestinationUrl, 400, 400)).FirstOrDefault();
+                city.Image_url = (await _googlePlacesService.getPhotoUrls(city.OriginLocation, 400, 400)).FirstOrDefault();
             }
 
             foreach (var city in tp.CityPlans)
             {
-                foreach (var hotel in city.Hotels)
+                foreach (var accomodation in city.Accommodations)
                 {
-                    hotel.image_url = (await _googlePlacesService.getPhotoUrls(hotel.name, 400, 400)).FirstOrDefault();
-                    hotel.googleMapUrl = await _googlePlacesService.getPlaceLink(hotel.name);
+                    accomodation.image_url = (await _googlePlacesService.getPhotoUrls(accomodation.name, 400, 400)).FirstOrDefault();
+                    accomodation.googleMapUrl = await _googlePlacesService.getPlaceLink(accomodation.name);
                 }
             }
-
-
             
             foreach (var city in tp.CityPlans)
             {
-                foreach (var day in city.Itinerary)
-                {
-                    foreach (var place in day.Places)
+                    foreach (var place in city.Places)
                     {
                         place.googleMapUrl = await _googlePlacesService.getPlaceLink(place.location);
                         place.image_url = (await _googlePlacesService.getPhotoUrls(place.location, 400, 400)).FirstOrDefault();
                     }
-                }
             }    
             
-
-
             await _tripPlan.InsertOneAsync(tp);
             return CreatedAtAction(nameof(GetById), new { id = tp.Id }, tp);
         }
