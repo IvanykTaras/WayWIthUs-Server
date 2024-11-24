@@ -1,4 +1,5 @@
 ﻿using GoogleApi.Entities.Translate.Common.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -9,6 +10,7 @@ using WayWIthUs_Server.Service;
 
 namespace WayWIthUs_Server.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TripPlanController : ControllerBase
@@ -31,7 +33,6 @@ namespace WayWIthUs_Server.Controllers
         [HttpGet("{id}")]
         public async Task<TripPlan> GetById(string id)
         {
-            // write for me loop which executes ten times
             var filter = Builders<TripPlan>.Filter.Eq(e => e.Id, id);
             return await _tripPlan.Find(filter).FirstOrDefaultAsync();
         }
@@ -73,7 +74,7 @@ namespace WayWIthUs_Server.Controllers
                         place.image_url = (await _googlePlacesService.getPhotoUrls(place.location, 400, 400)).FirstOrDefault();
                     }
             }    
-            
+
             await _tripPlan.InsertOneAsync(tp);
             return CreatedAtAction(nameof(GetById), new { id = tp.Id }, tp);
         }
