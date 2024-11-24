@@ -12,7 +12,6 @@ namespace WayWIthUs_Server.Entities{
         [BsonRequired]
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserId { get; set; }
-        
         [BsonRequired]
         public string Title { get; set; }
         [BsonRequired]
@@ -29,23 +28,14 @@ namespace WayWIthUs_Server.Entities{
         public GenderParticipants GenderParticipants { get; set; }
         [BsonRequired]
         public bool WithChildren { get; set; }
-        
         [BsonRequired]
         public int Budget { get; set; }
-        
-        [BsonRequired]
-        public BudgetType BudgetType { get; set; }
-
         [BsonRequired]
         public int GroupType { get; set; }
-
         [BsonRequired]
         public string TypeTravel { get; set; }
-
         [BsonRequired]
         public bool ParticipantsFromOtherCountries { get; set; }
-
-
     }
 
     public class Age
@@ -68,7 +58,6 @@ namespace WayWIthUs_Server.Entities{
         Moderate,
         Luxury
     }
-
     public enum GroupType
     {
         OnePerson,
