@@ -60,8 +60,8 @@ namespace WayWIthUs_Server.Controllers
             {
                 foreach (var accomodation in city.Accommodations)
                 {
-                    accomodation.image_url = (await _googlePlacesService.getPhotoUrls(accomodation.name, 400, 400)).FirstOrDefault();
-                    accomodation.googleMapUrl = await _googlePlacesService.getPlaceLink(accomodation.name);
+                    accomodation.image_url = (await _googlePlacesService.getPhotoUrls(accomodation.location_acc, 400, 400)).FirstOrDefault();
+                    accomodation.googleMapUrl = await _googlePlacesService.getPlaceLink(accomodation.location_acc);
                 }
             }
             
