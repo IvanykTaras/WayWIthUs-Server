@@ -43,7 +43,8 @@ namespace WayWIthUs_Server.Controllers
                 return Unauthorized("Invalid credentials.");
             }
 
-            var passwordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            var passwordValid = BCrypt.Net.BCrypt.Verify(passwordHash, user.Password);
             if(passwordValid)
             {
                 return Unauthorized("Password is incorrect.");
