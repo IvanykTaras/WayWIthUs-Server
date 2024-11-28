@@ -19,6 +19,12 @@ namespace WayWIthUs_Server.Controllers
             _user = mongoDbService.UserDatabase.GetCollection<User>(userdbCollectionName);   
         }
 
+        [HttpGet]
+        public async Task<List<User>> Get()
+        {
+            return await _user.Find(FilterDefinition<User>.Empty).ToListAsync();
+        }
+
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult> Post(User user)
@@ -69,5 +75,8 @@ namespace WayWIthUs_Server.Controllers
             await _user.DeleteOneAsync(u => u.Id == id);
             return NoContent();
         }
+
+
+
     }
 }
