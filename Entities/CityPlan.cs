@@ -19,6 +19,7 @@ namespace WayWIthUs_Server.Entities
         public ICollection<Accommodation> Accommodations { get; set; }
         [BsonRequired]
         public ICollection<Place> Places { get; set; }
+        public string Description { get; set; }
     }
 
     public class Accommodation

@@ -12,6 +12,11 @@ namespace WayWIthUs_Server.Entities{
         [BsonRequired]
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserId { get; set; }
+
+        [BsonRequired]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public ICollection<BsonObjectId> Participants { get; set; }
+
         [BsonRequired]
         public string Title { get; set; }
         [BsonRequired]
