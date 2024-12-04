@@ -79,5 +79,24 @@ namespace WayWIthUs_Server.Controllers
             await _tripPlan.InsertOneAsync(tp);
             return CreatedAtAction(nameof(GetById), new { id = tp.Id }, tp);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(string id, TripPlan tp)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var filter = Builders<TripPlan>.Filter.Eq(e => e.Id, id);
+            var updateResult = await _tripPlan.ReplaceOneAsync(filter, tp);
+
+            if (updateResult.IsAcknowledged && updateResult.ModifiedCount > 0)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
+        }
     }
 }
