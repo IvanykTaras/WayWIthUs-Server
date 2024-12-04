@@ -24,6 +24,7 @@ namespace WayWIthUs_Server.Controllers
             _googlePlacesService = googlePlacesService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<List<TripPlan>> Get()
         {

@@ -37,15 +37,15 @@ namespace WayWIthUs_Server.Controllers
             }
 
             //find user in database
-            var user = _user.Find(u => u.Email == request.Email).FirstOrDefault();
+            var user = _user.Find(u => u.email == request.Email).FirstOrDefault();
             if (user == null)
             {
                 return Unauthorized("Invalid credentials.");
             }
 
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-            var passwordValid = BCrypt.Net.BCrypt.Verify(passwordHash, user.Password);
-            if(passwordValid)
+            /*var passwordHash = BCrypt.Net.BCrypt.HashPassword("1234");*/
+            var passwordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.password);
+            if(!passwordValid)
             {
                 return Unauthorized("Password is incorrect.");
             }
@@ -78,7 +78,7 @@ namespace WayWIthUs_Server.Controllers
             }
 
             return Ok(new LoginResponse(){ 
-                UserName = request.Email,
+                User = user,
                 AccessToken = jwt,
                 ExpiresIn = (int)TokenLifeTime.TotalSeconds
              });

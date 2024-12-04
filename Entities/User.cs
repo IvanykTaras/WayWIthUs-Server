@@ -13,12 +13,19 @@ public class User
     public string? Id { get; set; }
     
     [BsonRequired]
-    public string Username { get; set; }
-    
-    [BsonRequired]
     [EmailAddress(ErrorMessage = "Invalid Email Address")]
-    public string Email { get; set; }
+    public string email { get; set; }
     
     [BsonRequired]
-    public string Password { get; set; } 
+    public string family_name { get; set; }
+    [BsonRequired]
+    public string given_name { get; set; }
+    [BsonRequired]
+    public string name { get; set; }
+    [BsonRequired]
+    public string picture { get; set; }
+    [BsonRequired]
+    public bool verified_email { get; set; }
+    [BsonRequired]
+    public string? password { get; set; } = null;
 }

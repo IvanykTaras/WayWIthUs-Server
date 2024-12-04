@@ -34,13 +34,14 @@ namespace WayWIthUs_Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            var existingUser = await _user.Find(u => u.Email == user.Email).FirstOrDefaultAsync();
+            var existingUser = await _user.Find(u => u.email == user.email).FirstOrDefaultAsync();
             if (existingUser != null)
             {
                 return BadRequest("User with this email already exists.");
             }
  
-            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);            
+            string newPassword = BCrypt.Net.BCrypt.HashPassword(user.password);
+            user.password = newPassword;       
             await _user.InsertOneAsync(user);
             return Ok(user);
         }

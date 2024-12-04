@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using WayWIthUs_Server.Data;
+using WayWIthUs_Server.Hubs;
 using WayWIthUs_Server.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 //         options.Authority = "https://dev-7z1v7v7v.us.auth0.com/";
 //         options.Audience = "https://waywithus";
 //     });
+
+
 
 
 builder.Services.AddAuthentication(option => {
@@ -39,7 +42,13 @@ builder.Services.AddAuthentication(option => {
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddSingleton<IDictionary<string, UserConnection>>(options => new Dictionary<string, UserConnection>());
+builder.Services.AddSignalR();
+
+
+
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => {
@@ -66,7 +75,9 @@ builder.Services.AddSwaggerGen(options => {
         }
     });
 });
-builder.Services.AddCors(options =>
+
+
+/*builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
@@ -74,7 +85,24 @@ builder.Services.AddCors(options =>
         .AllowAnyMethod()
         .AllowAnyHeader();
     });
+});*/
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("SomePolicy", builder =>
+    {
+        builder.WithOrigins(Enumerable
+                    .Range(3000, 3001)
+                    .Select(port => $"http://localhost:{port}")
+                    .ToArray())
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
 });
+
+
 builder.Services.AddGoogleApiClients();
 builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddScoped<IGooglePlacesService, GooglePlacesService>();
@@ -93,12 +121,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors();
+app.UseCors("SomePolicy");
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<ChatHub>("/chat");
 
 app.Run();
