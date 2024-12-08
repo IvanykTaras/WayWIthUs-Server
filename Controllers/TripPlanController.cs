@@ -98,5 +98,52 @@ namespace WayWIthUs_Server.Controllers
 
             return NotFound();
         }
+
+
+        [HttpPost("{id}/addParticipant/{participantId}")]
+        public async Task<IActionResult> AddParticipant(string id, string participantId)
+        {
+            var filter = Builders<TripPlan>.Filter.Eq(e => e.Id, id);
+            
+            var tripPlan = await _tripPlan.Find(filter).FirstOrDefaultAsync();
+            if (tripPlan.Participants.Contains(participantId))
+            {
+                return Ok();
+            }
+
+            var update = Builders<TripPlan>.Update.AddToSet("Participants", participantId);
+            var updateResult = await _tripPlan.UpdateOneAsync(filter, update);
+
+            if (updateResult.IsAcknowledged && updateResult.ModifiedCount > 0)
+            {
+                return NoContent();
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}/removeParticipant/{participantId}")]
+        public async Task<IActionResult> RemoveParticipant(string id, string participantId)
+        {
+            var filter = Builders<TripPlan>.Filter.Eq(e => e.Id, id);
+
+            var tripPlan = await _tripPlan.Find(filter).FirstOrDefaultAsync();
+            if (!tripPlan.Participants.Contains(participantId))
+            {
+                return Ok();
+            }
+
+            var update = Builders<TripPlan>.Update.Pull("Participants", participantId);
+            var updateResult = await _tripPlan.UpdateOneAsync(filter, update);
+
+            if (updateResult.IsAcknowledged && updateResult.ModifiedCount > 0)
+            {
+                return NoContent();
+            }
+
+            return Ok();
+        }
+
+        
     }
 }

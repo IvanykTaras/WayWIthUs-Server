@@ -1,5 +1,6 @@
 ﻿using GoogleApi.Entities.Search.Common;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 
 namespace WayWIthUs_Server.Hubs
@@ -21,6 +22,12 @@ namespace WayWIthUs_Server.Hubs
 
             await Clients.Group(userConnection.Room).SendAsync("ReciveMessage", "User: " + userConnection.User, $"{userConnection.User} join room {userConnection.Room}");
 
+            UserNotification notification = new UserNotification() { 
+                User = userConnection.User,
+                Title = "Notification",
+                Notification = $"{userConnection.User} join room {userConnection.Room}"
+            };
+            await SendNotification(notification);
             await SendConnectedUsers(userConnection.Room);
         }
 
@@ -49,11 +56,22 @@ namespace WayWIthUs_Server.Hubs
 
         public async Task SendConnectedUsers(string room)
         {
-            var users = _connections.Values.Where(e => e.Room == room).Select(e => e.User);
+            var users = _connections.Values.Where(e => e.Room == room).Select(e => e.User).Distinct();
             await Clients.Group(room).SendAsync("UsersInRoom", users);
+        }
+
+        public async Task SendNotification(UserNotification notification)
+        {
+            await Clients.All.SendAsync("ReceiveNotification", JsonConvert.SerializeObject(notification));
         }
     }
 
+    public class UserNotification
+    {
+        public string User { get; set; }
+        public string Title { get; set; }
+        public string Notification { get; set; }
+    }
     public class UserConnection
     {
         public string User { get; set; }

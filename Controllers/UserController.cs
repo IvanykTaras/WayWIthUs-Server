@@ -46,6 +46,14 @@ namespace WayWIthUs_Server.Controllers
             return Ok(user);
         }
 
+        [HttpGet("{id}")]
+        public async Task<User> Get(string id)
+        {
+            var filter = Builders<User>.Filter.Eq(e => e.Id, id);
+            return await _user.Find(filter).FirstOrDefaultAsync();
+        }
+
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, User updatedUser)
         {
