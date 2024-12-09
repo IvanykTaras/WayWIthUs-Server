@@ -40,6 +40,8 @@ namespace WayWIthUs_Server.Entities{
         public string TypeTravel { get; set; }
         [BsonRequired]
         public bool ParticipantsFromOtherCountries { get; set; }
+        [BsonRequired]
+        public bool OpenForBussines { get; set; }
     }
 
     public class Age
