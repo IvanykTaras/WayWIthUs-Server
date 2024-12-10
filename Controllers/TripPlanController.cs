@@ -76,6 +76,8 @@ namespace WayWIthUs_Server.Controllers
                     }
             }    
 
+            tp.Participants.Add(tp.UserId);
+
             await _tripPlan.InsertOneAsync(tp);
             return CreatedAtAction(nameof(GetById), new { id = tp.Id }, tp);
         }
