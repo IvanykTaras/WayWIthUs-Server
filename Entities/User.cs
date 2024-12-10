@@ -11,11 +11,9 @@ public class User
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; set; }
-    
     [BsonRequired]
     [EmailAddress(ErrorMessage = "Invalid Email Address")]
     public string email { get; set; }
-    
     [BsonRequired]
     public string family_name { get; set; }
     [BsonRequired]

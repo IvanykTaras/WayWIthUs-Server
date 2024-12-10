@@ -24,7 +24,7 @@ namespace WayWIthUs_Server.Hubs
 
             UserNotification notification = new UserNotification() { 
                 User = userConnection.User,
-                Title = "Notification",
+                Title = userConnection.Room,
                 Notification = $"{userConnection.User} join room {userConnection.Room}"
             };
             await SendNotification(notification);
@@ -39,6 +39,12 @@ namespace WayWIthUs_Server.Hubs
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, userConnection.Room);
                 _connections.Remove(Context.ConnectionId);
 
+                await SendNotification(new UserNotification()
+                {
+                    User = userConnection.User,
+                    Title = userConnection.Room,
+                    Notification = $"{userConnection.User} leave room {userConnection.Room}"
+                });
                 await SendConnectedUsers(userConnection.Room);
             }
 
@@ -51,6 +57,13 @@ namespace WayWIthUs_Server.Hubs
             {
                 await Clients.Group(userConnection.Room)
                  .SendAsync("ReciveMessage", userConnection.User, message);
+
+                await SendNotification(new UserNotification()
+                {
+                    User = userConnection.User,
+                    Title = userConnection.Room,
+                    Notification = message
+                });
             }
         }
 
@@ -62,7 +75,7 @@ namespace WayWIthUs_Server.Hubs
 
         public async Task SendNotification(UserNotification notification)
         {
-            await Clients.All.SendAsync("ReceiveNotification", JsonConvert.SerializeObject(notification));
+            await Clients.AllExcept(Context.ConnectionId).SendAsync("ReceiveNotification", notification.User, notification.Title, notification.Notification);
         }
     }
 
