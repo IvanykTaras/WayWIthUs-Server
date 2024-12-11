@@ -8,7 +8,7 @@
         public static readonly string USER_INFO = "https://www.googleapis.com/oauth2/v2/userinfo?access_token={token}";
         public static readonly string PLACES_API_TEXT_SEARCH = "https://places.googleapis.com/v1/places:searchText";
         public static readonly string PLACES_API_IMAGE_SEARCH = "https://places.googleapis.com/v1/{name}/media?key={apikey}&{params}";
-        public static readonly string OPENAI_API_KEY = "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";
+        public static readonly string OPEN_KEY = "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";
 
         public static readonly string[] LanguageOptions = new string[]
         {

@@ -10,7 +10,7 @@ public class OpenAiService
 
     public OpenAiService()
     {
-        client = new(model: "gpt-4o-mini", apiKey: ApiKeyAndUrl.OPENAI_API_KEY);
+        client = new(model: "gpt-4o-mini", apiKey: ApiKeyAndUrl.OPEN_KEY);
     }
 
     public async Task<string> GetOpenAiResponse(string text)
