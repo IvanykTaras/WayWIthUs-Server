@@ -7,7 +7,7 @@ using WayWIthUs_Server.Service;
 
 namespace WayWIthUs_Server.Controllers
 {
-    [Authorize]
+    /*[Authorize]*/
     [Route("api/[controller]")]
     [ApiController]
     public class GoogleApiController : ControllerBase
