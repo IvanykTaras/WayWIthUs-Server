@@ -17,6 +17,7 @@ namespace WayWIthUs_Server.Controllers
     public class TripPlanController : ControllerBase
     {
         private readonly IMongoCollection<TripPlan> _tripPlan;
+        private readonly IMongoCollection<User> _user;
         private readonly IGooglePlacesService _googlePlacesService;
         private readonly OpenAiService _openAiService;
 
@@ -30,6 +31,10 @@ namespace WayWIthUs_Server.Controllers
         {
             var tripPlanCollectionName = configuration.GetConnectionString("TripPlanCollection");
             _tripPlan = mongoDbService.Database.GetCollection<TripPlan>(tripPlanCollectionName);
+
+            var userCollectionName = configuration.GetConnectionString("UserCollection");
+            _user = mongoDbService.UserDatabase.GetCollection<User>(userCollectionName);
+
             _googlePlacesService = googlePlacesService;
 
             _openAiService = openAiService;
@@ -101,7 +106,32 @@ namespace WayWIthUs_Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            var filter = Builders<TripPlan>.Filter.Eq(e => e.Id, id);
+
+            foreach (var city in tp.CityPlans)
+            {
+                city.Image_url = (await _googlePlacesService.getPhotoUrls(city.OriginLocation, 400, 400)).FirstOrDefault();
+            }
+
+            foreach (var city in tp.CityPlans)
+            {
+                foreach (var accomodation in city.Accommodations)
+                {
+                    accomodation.image_url = (await _googlePlacesService.getPhotoUrls(accomodation.location_acc, 400, 400)).FirstOrDefault();
+                    accomodation.googleMapUrl = await _googlePlacesService.getPlaceLink(accomodation.location_acc);
+                }
+            }
+
+            foreach (var city in tp.CityPlans)
+            {
+                foreach (var place in city.Places)
+                {
+                    place.googleMapUrl = await _googlePlacesService.getPlaceLink(place.location);
+                    place.image_url = (await _googlePlacesService.getPhotoUrls(place.location, 400, 400)).FirstOrDefault();
+                }
+            }
+
+
+            var filter = Builders<TripPlan>.Filter.Eq(e => e.Id, id); 
             var updateResult = await _tripPlan.ReplaceOneAsync(filter, tp);
 
             if (updateResult.IsAcknowledged && updateResult.ModifiedCount > 0)
@@ -157,6 +187,23 @@ namespace WayWIthUs_Server.Controllers
             return Ok();
         }
 
+        [AllowAnonymous]
+        [HttpGet("{tripId}/participants")]
+        public async Task<ActionResult> Participants(string tripId)
+        {
+
+            List<User> users = new List<User>();
+
+            var tripPlan = await _tripPlan.Find(t => t.Id == tripId).FirstOrDefaultAsync(); 
+
+            foreach (var userId in tripPlan.Participants)
+            {
+                var user = await _user.Find(u => u.Id == userId).FirstOrDefaultAsync();
+                users.Add(user);
+            }
+
+            return Ok(users);
+        }
 
         [AllowAnonymous]
         [HttpPost("/getOpenAiResponse")]
@@ -302,7 +349,7 @@ namespace WayWIthUs_Server.Controllers
             return CreatedAtAction(nameof(GetById), new { id = tp.Id }, tp);
         }
 
-        
+       
 
         
     }
