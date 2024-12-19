@@ -12,7 +12,7 @@ namespace WayWIthUs_Server.Hubs
         public ChatHub(IDictionary<string, UserConnection> connections)
         {
             _connections = connections;
-        }
+        } 
 
         public async Task JoinRoom(UserConnection userConnection)
         {
@@ -27,7 +27,7 @@ namespace WayWIthUs_Server.Hubs
                 Title = userConnection.Room,
                 Notification = $"{userConnection.User} join room {userConnection.Room}"
             };
-            await SendNotification(notification);
+
             await SendConnectedUsers(userConnection.Room);
         }
 
@@ -39,12 +39,7 @@ namespace WayWIthUs_Server.Hubs
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, userConnection.Room);
                 _connections.Remove(Context.ConnectionId);
 
-                await SendNotification(new UserNotification()
-                {
-                    User = userConnection.User,
-                    Title = userConnection.Room,
-                    Notification = $"{userConnection.User} leave room {userConnection.Room}"
-                });
+                
                 await SendConnectedUsers(userConnection.Room);
             }
 
@@ -57,13 +52,7 @@ namespace WayWIthUs_Server.Hubs
             {
                 await Clients.Group(userConnection.Room)
                  .SendAsync("ReciveMessage", userConnection.User, message);
-
-                await SendNotification(new UserNotification()
-                {
-                    User = userConnection.User,
-                    Title = userConnection.Room,
-                    Notification = message
-                });
+     
             }
         }
 
