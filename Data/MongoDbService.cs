@@ -7,6 +7,7 @@ namespace WayWIthUs_Server.Data
         private readonly IConfiguration _configuration;
         private readonly IMongoDatabase? _database;
         private readonly IMongoDatabase? _userDatabase;
+
         public MongoDbService(IConfiguration configuration) {
             _configuration = configuration;
 

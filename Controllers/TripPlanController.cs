@@ -13,7 +13,7 @@ namespace WayWIthUs_Server.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController] 
     public class TripPlanController : ControllerBase
     {
         private readonly IMongoCollection<TripPlan> _tripPlan;
