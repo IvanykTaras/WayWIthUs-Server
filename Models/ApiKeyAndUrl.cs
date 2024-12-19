@@ -8,7 +8,7 @@
         public static readonly string USER_INFO = "https://www.googleapis.com/oauth2/v2/userinfo?access_token={token}";
         public static readonly string PLACES_API_TEXT_SEARCH = "https://places.googleapis.com/v1/places:searchText";
         public static readonly string PLACES_API_IMAGE_SEARCH = "https://places.googleapis.com/v1/{name}/media?key={apikey}&{params}";
-        public static readonly string OPEN_KEY = "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";
+        public static readonly string OPEN_KEY = "sk-proj-sIFcqPxcWOCR6CKUmWXxHtLA9EFFH-zVop4bsv2WAeH92Mwvik8q7FAcIBH6cx8QHYJ"+"-ZOvSNKT3BlbkFJnhMGM9GqicFKMi2Gg-5Nkaj4JcZ8hXS2EO3HhiffW7o3cw8dj29JX91Zcf89ST02GRcJ6JnjkA";
         public static readonly string[] LanguageOptions = new string[]
         {
             "en", "pl", "af", "am", "ar", "az", "bg", "bn", "cs", "cy", "da", "de", "el", "eo", "es", "et", "fa", "fi", "fr", "ga", "gu", "he", "hi", "hr", "hu", "hy", "is", "it", "ja", "ka", "kk", "km", "kn", "ko", "la", "lo", "lt", "lv", "mk", "ml", "mn", "mr", "mt", "my", "ne", "nl", "no", "or", "pa", "pt", "ro", "ru", "si", "sk", "sl", "so", "sq", "sr", "sv", "sw", "ta", "te", "th", "tr", "uk", "ur", "uz", "vi", "xh", "yi", "zh", "zu"

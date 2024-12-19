@@ -15,12 +15,6 @@ namespace WayWIthUs_Server.Hubs
         private readonly IDictionary<string, UserConnection> _connections;
         private readonly IMongoCollection<Message> _message;
 
-        public class UserConnection
-        {
-            public string Room { get; set; }
-            public string User { get; set; }
-        }
-
         public ChatHub(IDictionary<string, UserConnection> connections, MongoDbService mongoDbService, IConfiguration configuration)
         {
             _connections = connections;
@@ -61,7 +55,7 @@ namespace WayWIthUs_Server.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task SendMessage(string message)
+        public async Task SendMessage(string message, string tripId)
         {
             
 
@@ -72,6 +66,7 @@ namespace WayWIthUs_Server.Hubs
                     new Message()
                     {
                         Id = ObjectId.GenerateNewId().ToString(),
+                        TripId = tripId,
                         userConnection = new Hubs.UserConnection()
                         {
                             Room = userConnection.Room,

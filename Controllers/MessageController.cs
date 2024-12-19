@@ -21,5 +21,18 @@ namespace WayWIthUs_Server.Controllers
 
         [HttpGet]
         public async Task<List<Message>> Get() => await _message.Find(FilterDefinition<Message>.Empty).ToListAsync();
+
+        [HttpGet("{tripId}")]
+        public async Task<List<Message>> Get(string tripId) => await _message.Find(x => x.TripId == tripId).ToListAsync();
+
+        [HttpDelete("{id}")]
+        public async Task Delete(string id) => await _message.DeleteOneAsync(x => x.Id == id);
+        [HttpDelete("/deleteAll")]
+        public async Task DeleteAll() => await _message.DeleteManyAsync(FilterDefinition<Message>.Empty);
+
+        [HttpPost]
+        public async Task Create(Message message) => await _message.InsertOneAsync(message);
+
+
     }
 }

@@ -6,9 +6,14 @@ namespace WayWIthUs_Server.Entities
 {
     public class Message
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? Id { get; set; }
+
         [BsonRequired]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public string TripId { get; set; }
+
         [BsonRequired]
         public UserConnection userConnection { get; set; }
 
