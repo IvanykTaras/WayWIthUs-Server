@@ -180,16 +180,26 @@ namespace WayWIthUs_Server.Controllers
             return Ok(participants);
         }
 
+
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> DeleteTrip(string id)
         {
             var filter = Builders<TripPlan>.Filter.Eq(e => e.Id, id);
+            var tripPlan = await _tripPlan.Find(filter).FirstOrDefaultAsync();
+
+            if (tripPlan == null)
+            {
+                return NotFound($"Trip with ID {id} not found.");
+            }
+
             var deleteResult = await _tripPlan.DeleteOneAsync(filter);
-            if (deleteResult.IsAcknowledged && deleteResult.DeletedCount > 0)
+
+            if (deleteResult.DeletedCount > 0)
             {
                 return NoContent();
             }
-            return NotFound();
+
+            return BadRequest("Failed to delete the trip.");
         }
 
 
