@@ -211,7 +211,211 @@ namespace WayWIthUs_Server.Controllers
             return Ok(response);
         }
 
+
         [HttpPost("aiGenerateTripPlan/{userId}")]
+        public async Task<ActionResult> AiGenerateTripPlan(string userId)
+        {
+            var random = new Random();
+            var startDate = DateTime.Now.AddDays(random.Next(1, 30));
+            var endDate = startDate.AddDays(random.Next(1, 30));
+            var minAge = random.Next(18, 50);
+            var maxAge = random.Next(minAge, 50);
+
+            var languageOptions = ApiKeyAndUrl.LanguageOptions;
+            var pickLanguages = languageOptions
+                .OrderBy(_ => random.Next())
+                .Take(random.Next(1, languageOptions.Length))
+                .ToList();
+
+            var cityPlans = new List<CityPlan>();
+            var randomCities = ApiKeyAndUrl.RandomCities;
+
+            var cityTasks = Enumerable.Range(0, random.Next(2, 5)).Select(async _ =>
+            {
+                var cityStartDate = DateTime.Now.AddDays(random.Next(1, 30));
+                var cityEndDate = cityStartDate.AddDays(random.Next(1, 30));
+                var originLocation = ApiKeyAndUrl.RandomCities[random.Next(randomCities.Length)];
+
+                var accommodations = new List<Accommodation>
+                {
+                    new Accommodation
+                    {
+                        location_acc = originLocation,
+                        name = await _openAiService.GetOpenAiResponse($"fill some name for {originLocation}"),
+                        description = await _openAiService.GetOpenAiResponse($"write some beautiful description in markdown for {originLocation}"),
+                        image_url = "empty",
+                        googleMapUrl = "empty"
+                    }
+                };
+
+                var places = await Task.WhenAll(
+                    Enumerable.Range(0, random.Next(2, 5)).Select(async _ =>
+                    {
+                        var location = randomCities[random.Next(randomCities.Length)];
+                        return new Place
+                        {
+                            location = location,
+                            details = await _openAiService.GetOpenAiResponse($"write some beautiful description in markdown for a place in city {originLocation}"),
+                            image_url = "empty",
+                            googleMapUrl = "empty"
+                        };
+                    })
+                );
+
+                return new CityPlan
+                {
+                    StartDate = cityStartDate,
+                    EndDate = cityEndDate,
+                    OriginLocation = originLocation,
+                    Image_url = "empty",
+                    Transport = (Transport)random.Next(Enum.GetValues(typeof(Transport)).Length),
+                    Accommodations = accommodations,
+                    Places = places.ToList(),
+                    Description = await _openAiService.GetOpenAiResponse("write some beautiful description in markdown for a city plan")
+                };
+            });
+
+            cityPlans = (await Task.WhenAll(cityTasks)).ToList();
+
+            var tp = new TripPlan
+            {
+                UserId = userId,
+                Participants = new List<string> { userId },
+                Title = await _openAiService.GetOpenAiResponse("Generate a brief title for a trip"),
+                Description = await _openAiService.GetOpenAiResponse("Generate a brief description for a trip max 40 words"),
+                StartDate = startDate,
+                EndDate = endDate,
+                CityPlans = cityPlans,
+                Languages = pickLanguages.ToArray(),
+                Age = new Age { Min = minAge, Max = maxAge },
+                GenderParticipants = (GenderParticipants)random.Next(Enum.GetValues(typeof(GenderParticipants)).Length),
+                WithChildren = random.Next(2) == 0,
+                Budget = random.Next(2, 10000),
+                GroupType = random.Next(1, 20),
+                TypeTravel = ApiKeyAndUrl.TravelTypesArray[random.Next(ApiKeyAndUrl.TravelTypesArray.Length)],
+                ParticipantsFromOtherCountries = random.Next(2) == 0,
+                OpenForBussines = false
+            };
+
+            // Fetch images and Google Maps links in parallel
+            await Task.WhenAll(cityPlans.Select(async city =>
+            {
+                city.Image_url = (await _googlePlacesService.getPhotoUrls(city.OriginLocation, 400, 400)).FirstOrDefault();
+                await Task.WhenAll(city.Places.Select(async place =>
+                {
+                    place.googleMapUrl = await _googlePlacesService.getPlaceLink(place.location);
+                    place.image_url = (await _googlePlacesService.getPhotoUrls(place.location, 400, 400)).FirstOrDefault();
+                }));
+            }));
+
+            
+            await _tripPlan.InsertOneAsync(tp);
+            return CreatedAtAction(nameof(GetById), new { id = tp.Id }, tp);
+        }
+
+
+        [HttpPost("aiGenerateTripPlanDontSave/{userId}")]
+        public async Task<ActionResult> AiGenerateTripPlanDontSave(string userId)
+        {
+            var random = new Random();
+            var startDate = DateTime.Now.AddDays(random.Next(1, 30));
+            var endDate = startDate.AddDays(random.Next(1, 30));
+            var minAge = random.Next(18, 50);
+            var maxAge = random.Next(minAge, 50);
+
+            var languageOptions = ApiKeyAndUrl.LanguageOptions;
+            var pickLanguages = languageOptions
+                .OrderBy(_ => random.Next())
+                .Take(random.Next(1, languageOptions.Length))
+                .ToList();
+
+            var cityPlans = new List<CityPlan>();
+            var randomCities = ApiKeyAndUrl.RandomCities;
+
+            var cityTasks = Enumerable.Range(0, random.Next(2, 5)).Select(async _ =>
+            {
+                var cityStartDate = DateTime.Now.AddDays(random.Next(1, 30));
+                var cityEndDate = cityStartDate.AddDays(random.Next(1, 30));
+                var originLocation = ApiKeyAndUrl.RandomCities[random.Next(randomCities.Length)];
+
+                var accommodations = new List<Accommodation>
+                {
+                    new Accommodation
+                    {
+                        location_acc = originLocation,
+                        name = await _openAiService.GetOpenAiResponse($"fill some name for {originLocation}"),
+                        description = await _openAiService.GetOpenAiResponse($"write some beautiful description in markdown for {originLocation}"),
+                        image_url = "empty",
+                        googleMapUrl = "empty"
+                    }
+                };
+
+                var places = await Task.WhenAll(
+                    Enumerable.Range(0, random.Next(2, 5)).Select(async _ =>
+                    {
+                        var location = randomCities[random.Next(randomCities.Length)];
+                        return new Place
+                        {
+                            location = location,
+                            details = await _openAiService.GetOpenAiResponse($"write some beautiful description in markdown for a place in city {originLocation}"),
+                            image_url = "empty",
+                            googleMapUrl = "empty"
+                        };
+                    })
+                );
+
+                return new CityPlan
+                {
+                    StartDate = cityStartDate,
+                    EndDate = cityEndDate,
+                    OriginLocation = originLocation,
+                    Image_url = "empty",
+                    Transport = (Transport)random.Next(Enum.GetValues(typeof(Transport)).Length),
+                    Accommodations = accommodations,
+                    Places = places.ToList(),
+                    Description = await _openAiService.GetOpenAiResponse("write some beautiful description in markdown for a city plan")
+                };
+            });
+
+            cityPlans = (await Task.WhenAll(cityTasks)).ToList();
+
+            var tp = new TripPlan
+            {
+                UserId = userId,
+                Participants = new List<string> { userId },
+                Title = await _openAiService.GetOpenAiResponse("Generate a brief title for a trip"),
+                Description = await _openAiService.GetOpenAiResponse("Generate a brief description for a trip max 40 words"),
+                StartDate = startDate,
+                EndDate = endDate,
+                CityPlans = cityPlans,
+                Languages = pickLanguages.ToArray(),
+                Age = new Age { Min = minAge, Max = maxAge },
+                GenderParticipants = (GenderParticipants)random.Next(Enum.GetValues(typeof(GenderParticipants)).Length),
+                WithChildren = random.Next(2) == 0,
+                Budget = random.Next(2, 10000),
+                GroupType = random.Next(1, 20),
+                TypeTravel = ApiKeyAndUrl.TravelTypesArray[random.Next(ApiKeyAndUrl.TravelTypesArray.Length)],
+                ParticipantsFromOtherCountries = random.Next(2) == 0,
+                OpenForBussines = false
+            };
+
+            // Fetch images and Google Maps links in parallel
+            await Task.WhenAll(cityPlans.Select(async city =>
+            {
+                city.Image_url = (await _googlePlacesService.getPhotoUrls(city.OriginLocation, 400, 400)).FirstOrDefault();
+                await Task.WhenAll(city.Places.Select(async place =>
+                {
+                    place.googleMapUrl = await _googlePlacesService.getPlaceLink(place.location);
+                    place.image_url = (await _googlePlacesService.getPhotoUrls(place.location, 400, 400)).FirstOrDefault();
+                }));
+            }));
+
+            return CreatedAtAction(nameof(Get), tp);
+        }
+
+
+
+        /*[HttpPost("aiGenerateTripPlan/{userId}")]
         public async Task<ActionResult> AiGenerateTripPlan(string userId)
         {
             //674e42c8456b55bec98b2d78
@@ -236,14 +440,14 @@ namespace WayWIthUs_Server.Controllers
             }
 
             List<CityPlan> cityPlans = new List<CityPlan>();
-            for (int i = 0; i < random.Next(1, 5); i++){
+            for (int i = 0; i < random.Next(2, 5); i++){
                 var cityStartDate = DateTime.Now.AddDays(random.Next(1, 30));
                 var cityEndDate = startDate.AddDays(random.Next(1, 30));
                 var originLocationWitoutNull = ApiKeyAndUrl.RandomCities[random.Next(ApiKeyAndUrl.RandomCities.Length)];
 
 
                 List<Accommodation> accommodations = new List<Accommodation>();
-                for (int j = 0; j < random.Next(1, 5); j++){
+                
 
                     var locationAccWitoutNull = ApiKeyAndUrl.RandomCities[random.Next(ApiKeyAndUrl.RandomCities.Length)];
 
@@ -251,23 +455,23 @@ namespace WayWIthUs_Server.Controllers
                     {
                         location_acc = locationAccWitoutNull,
                         name = await _openAiService.GetOpenAiResponse("fill some name for " + originLocationWitoutNull),
-                        description = await _openAiService.GetOpenAiResponse("write some brief description for " + originLocationWitoutNull),
+                        description = await _openAiService.GetOpenAiResponse("write some beautiful description in markdown for " + originLocationWitoutNull),
                         image_url = "empty",
                         googleMapUrl = "empty"
                     };
 
                     accommodations.Add(accomodation2);
-                }
+                
 
                 List<Place> places = new List<Place>();
-                for (int j = 0; j < random.Next(1, 5); j++){
+                for (int j = 0; j < random.Next(2, 5); j++){
 
                     var locWitoutNull = ApiKeyAndUrl.RandomCities[random.Next(ApiKeyAndUrl.RandomCities.Length)];
 
                     var place2 = new Place()
                     {
                         location = locWitoutNull,
-                        details = await _openAiService.GetOpenAiResponse("Generate a brief description for a place in city" + originLocationWitoutNull),
+                        details = await _openAiService.GetOpenAiResponse("write some beautiful description in markdown for a place in city" + originLocationWitoutNull),
                         image_url = "empty",
                         googleMapUrl = "empty"
                     };
@@ -284,7 +488,7 @@ namespace WayWIthUs_Server.Controllers
                     Transport = (Transport)random.Next(Enum.GetValues(typeof(Transport)).Length),
                     Accommodations = accommodations,
                     Places = places,
-                    Description = await _openAiService.GetOpenAiResponse("Generate a brief description for a city plan")
+                    Description = await _openAiService.GetOpenAiResponse("write some beautiful description in markdown for a city plan")
                 };
 
 
@@ -318,14 +522,14 @@ namespace WayWIthUs_Server.Controllers
                 city.Image_url = (await _googlePlacesService.getPhotoUrls(city.OriginLocation, 400, 400)).FirstOrDefault();
             }
 
-            foreach (var city in tp.CityPlans)
+            *//*foreach (var city in tp.CityPlans)
             {
                 foreach (var accomodation in city.Accommodations)
                 {
                     accomodation.image_url = (await _googlePlacesService.getPhotoUrls(accomodation.location_acc, 400, 400)).FirstOrDefault();
                     accomodation.googleMapUrl = await _googlePlacesService.getPlaceLink(accomodation.location_acc);
                 }
-            }
+            }*//*
             
             foreach (var city in tp.CityPlans)
             {
@@ -342,9 +546,9 @@ namespace WayWIthUs_Server.Controllers
             return CreatedAtAction(nameof(GetById), new { id = tp.Id }, tp);
         }
 
-        
+        */
 
-        
+
     }
 
 }
