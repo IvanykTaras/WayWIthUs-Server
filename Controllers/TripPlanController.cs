@@ -400,7 +400,7 @@ namespace WayWIthUs_Server.Controllers
             };
 
             // Fetch images and Google Maps links in parallel
-            await Task.WhenAll(cityPlans.Select(async city =>
+            /*await Task.WhenAll(cityPlans.Select(async city =>
             {
                 city.Image_url = (await _googlePlacesService.getPhotoUrls(city.OriginLocation, 400, 400)).FirstOrDefault();
                 await Task.WhenAll(city.Places.Select(async place =>
@@ -408,7 +408,7 @@ namespace WayWIthUs_Server.Controllers
                     place.googleMapUrl = await _googlePlacesService.getPlaceLink(place.location);
                     place.image_url = (await _googlePlacesService.getPhotoUrls(place.location, 400, 400)).FirstOrDefault();
                 }));
-            }));
+            }));*/
 
             return CreatedAtAction(nameof(Get), tp);
         }

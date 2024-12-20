@@ -29,13 +29,8 @@ namespace WayWIthUs_Server.Hubs
 
             _connections[Context.ConnectionId] = userConnection;
 
-            await Clients.Group(userConnection.Room).SendAsync("ReciveMessage", "User: " + userConnection.User, $"{userConnection.User} join room {userConnection.Room}");
+            // await Clients.Group(userConnection.Room).SendAsync("ReciveMessage", "User: " + userConnection.User, $"{userConnection.User} join room {userConnection.Room}");
 
-            UserNotification notification = new UserNotification() { 
-                User = userConnection.User,
-                Title = userConnection.Room,
-                Notification = $"{userConnection.User} join room {userConnection.Room}"
-            };
 
             await SendConnectedUsers(userConnection.Room);
         }
@@ -44,7 +39,8 @@ namespace WayWIthUs_Server.Hubs
         {
             if (_connections.TryGetValue(Context.ConnectionId, out UserConnection userConnection))
             {
-                await Clients.Group(userConnection.Room).SendAsync("ReciveMessage", "User: " + userConnection.User, $"{userConnection.User} leave room {userConnection.Room}");
+                // await Clients.Group(userConnection.Room).SendAsync("ReciveMessage", "User: " + userConnection.User, $"{userConnection.User} leave room {userConnection.Room}");
+                
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, userConnection.Room);
                 _connections.Remove(Context.ConnectionId);
 
